@@ -166,9 +166,15 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  _showDialog(BuildContext context) async {
-    _nameEditingController.clear();
-    _phoneEditingController.clear();
+  _showDialog(BuildContext context, index) async {
+    print(index);
+    if(index >= 0){
+      _nameEditingController.value = new TextEditingValue(text: _phoneList[index].name);
+      _phoneEditingController.value = new TextEditingValue(text: _phoneList[index].phone);
+    }else{
+      _nameEditingController.clear();
+      _phoneEditingController.clear();
+    }
     await showDialog<String>(
         context: context,
       builder: (BuildContext context) {
@@ -202,7 +208,14 @@ class _HomePageState extends State<HomePage> {
               new FlatButton(
                   child: const Text('Save'),
                   onPressed: () {
-                    _addNewPhone(_nameEditingController.text.toString(), _phoneEditingController.text.toString());
+                    if(index >= 0){
+                      Phone phone = _phoneList[index];
+                      phone.name = _nameEditingController.text.toString();
+                      phone.phone = _phoneEditingController.text.toString();
+                      _updatePhone(phone);
+                    }else{
+                      _addNewPhone(_nameEditingController.text.toString(), _phoneEditingController.text.toString());
+                    }
                     Navigator.pop(context);
                   })
             ],
@@ -221,7 +234,7 @@ class _HomePageState extends State<HomePage> {
             String name = _phoneList[index].name;
             String phone = _phoneList[index].phone;
             bool completed = _phoneList[index].completed;
-            String userId = _phoneList[index].userId;
+//            String userId = _phoneList[index].userId;
             return Dismissible(
               key: Key(phoneId),
               background: Container(color: Colors.red),
@@ -238,21 +251,16 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(fontSize: 20.0),
                 ),
                 trailing: IconButton(
-                    icon: (completed)
-                        ? Icon(
-                      Icons.done_outline,
-                      color: Colors.green,
-                      size: 20.0,
-                    )
-                        : Icon(Icons.done, color: Colors.grey, size: 20.0),
+                    icon: Icon(Icons.border_color, color: Colors.grey, size: 20.0),
                     onPressed: () {
-                      _updatePhone(_phoneList[index]);
+                      _showDialog(context, index);
+//                      _updatePhone(_phoneList[index]);
                     }),
               ),
             );
           });
     } else {
-      return Center(child: Text("Welcome. Your phone book is empty",
+      return Center(child: Text("Bem vindo, sua agenda está vazia",
         textAlign: TextAlign.center,
         style: TextStyle(fontSize: 30.0),));
     }
@@ -273,7 +281,7 @@ class _HomePageState extends State<HomePage> {
         body: _showPhoneList(),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            _showDialog(context);
+            _showDialog(context, -5);
           },
           tooltip: 'Increment',
           child: Icon(Icons.add),
