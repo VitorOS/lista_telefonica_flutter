@@ -5,3 +5,8 @@ Crud de lista telefônica
 atividade de lds
 
 Criação de uma lista telefonida simples
+
+tecnologias usadas:
+
+  Dart
+  Flutter
