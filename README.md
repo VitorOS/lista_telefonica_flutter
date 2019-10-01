@@ -10,3 +10,4 @@ tecnologias usadas:
 
   Dart
   Flutter
+  firebase
